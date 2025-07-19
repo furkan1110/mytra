@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyTra-FX</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>MyTra-FX</h1>
+            <nav>
+                <ul>
+                    <li><a href="#" onclick="showSection('home')">Anasayfa</a></li>
+                    <li><a href="#" onclick="showSection('charts')">Grafikler</a></li>
+                    <li><a href="#" onclick="showSection('about-forex')">Forex Hakkında</a></li>
+                    <li><a href="#" onclick="showSection('why-mytra-fx')">Neden MyTra-FX?</a></li>
+                    <li><a href="#" onclick="showSection('faq')">Sıkça Sorulan Sorular</a></li>
+                    <li><a href="#" onclick="showSection('contact')">İletişim</a></li>
+                    <li><a href="#" onclick="showSection('signals')">Sinyaller</a></li>
+                    <li id="auth-menu" style="display: none;">
+                        <a href="#" id="user-display-name"></a>
+                        <div class="dropdown-content">
+                            <a href="#" onclick="showSection('wallet')">Cüzdan</a>
+                            <a href="#" onclick="showSection('trade-history')">İşlem Geçmişi</a>
+                            <a href="#" onclick="logout()">Çıkış Yap</a>
+                        </div>
+                    </li>
+                    <li id="login-buttons-nav" style="display: flex;">
+                        <a href="#" onclick="showSection('login-section')">Giriş Yap</a>
+                        <a href="#" onclick="showSection('register-section')">Kayıt Ol</a>
+                        <a href="#" onclick="demoLogin()">Demo Giriş</a>
+                    </li>
+                    <li id="admin-panel-link" style="display: none;">
+                        <a href="#" onclick="showSection('admin-panel')">Admin Paneli</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="home" class="active">
+            <h2>Hoş Geldiniz!</h2>
+            <p>MyTra-FX ile güvenli ve karlı finansal piyasalarda işlem yapın.</p>
+            <div class="home-cta">
+                <button id="home-register-btn" onclick="showSection('register-section')">Hemen Kayıt Ol</button>
+                <button id="home-forex-info-btn" onclick="showSection('about-forex')">Forex Nedir?</button>
+            </div>
+            
+            <div class="info-summary">
+                <h3>Forex Nedir?</h3>
+                <p>Forex (Foreign Exchange), bir para biriminin başka bir para birimiyle değiştirildiği, dünyanın en büyük ve en likit finans piyasasıdır. Hafta içi 24 saat işlem yapılabilir ve küresel para birimlerinin değerlerini belirler. Detaylı bilgi için <a href="#" onclick="showSection('about-forex')">Forex Hakkında</a> sayfamızı ziyaret edin.</p>
+
+                <h3>Neden MyTra-FX?</h3>
+                <p>MyTra-FX, finansal piyasalarda işlem yapmak isteyenler için güvenilir, kullanıcı dostu ve kapsamlı bir platform sunar. Gerçek zamanlı veriler, güvenli işlemler ve uzman desteği ile finansal hedeflerinize ulaşmanız için yanınızdayız. Daha fazlası için <a href="#" onclick="showSection('why-mytra-fx')">Neden MyTra-FX?</a> sayfamıza göz atın.</p>
+            </div>
+
+            <h3 style="margin-top: 40px;">Piyasa Gözlemi (Canlı Fiyatlar)</h3>
+            <div class="view-toggle">
+                <button onclick="togglePriceView('grid')">Tablo Görünümü</button>
+                <button onclick="togglePriceView('list')">Liste Görünümü</button>
+            </div>
+            <div id="live-prices-grid" class="live-prices-grid active-view">
+                </div>
+            <div id="live-prices-list" class="live-prices-list">
+                </div>
+
+            <h3 style="margin-top: 40px;">Piyasa Genel Bakışı (TradingView)</h3>
+            <div class="tradingview-widget-container" style="height:400px; width:100%;">
+                <div id="tradingview_8e94f"></div>
+                <div class="tradingview-widget-copyright"><a href="https://tr.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Piyasalar Bugün</span></a> - TradingView.com</div>
+                <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                <script type="text/javascript">
+                new TradingView.widget(
+                {
+                "width": "100%",
+                "height": "400",
+                "symbol": "FX_IDC:EURUSD", 
+                "interval": "D",
+                "timezone": "Europe/Istanbul",
+                "theme": "light",
+                "style": "1",
+                "locale": "tr",
+                "toolbar_bg": "#f1f3f6",
+                "enable_publishing": false,
+                "allow_symbol_change": true,
+                "container_id": "tradingview_8e94f"
+                }
+                );
+                </script>
+            </div>
+            </section>
+
+        <section id="charts">
+            <h2>Grafikler</h2>
+            <div class="chart-controls">
+                <select id="chart-symbol-select"></select>
+                <select id="chart-interval-select">
+                    <option value="1min">1 Dakika</option>
+                    <option value="5min">5 Dakika</option>
+                    <option value="15min">15 Dakika</option>
+                    <option value="30min">30 Dakika</option>
+                    <option value="1h">1 Saat</option>
+                    <option value="1day">1 Gün</option>
+                </select>
+                <button onclick="loadChartData()">Grafiği Yükle</button>
+            </div>
+            <div id="chart-container">
+                <canvas id="forexChart"></canvas>
+            </div>
+
+            <h3>İşlem Aç</h3>
+            <div class="trade-form">
+                <label for="trade-symbol">Sembol:</label>
+                <select id="trade-symbol" onchange="updateCurrentPriceDisplay()"></select>
+                <label for="trade-type">Tip:</label>
+                <select id="trade-type">
+                    <option value="BUY">AL</option>
+                    <option value="SELL">SAT</option>
+                </select>
+                <label for="current-trade-price-label">Güncel Fiyat:</label>
+                <span id="current-trade-price" class="current-price-display">Yükleniyor...</span>
+                <label for="trade-amount">Miktar:</label>
+                <input type="number" id="trade-amount" min="1" value="1">
+                <label for="trade-tp">Kar Al (TP):</label>
+                <input type="number" id="trade-tp" placeholder="Opsiyonel">
+                <label for="trade-sl">Zarar Durdur (SL):</label>
+                <input type="number" id="trade-sl" placeholder="Opsiyonel">
+                <button onclick="openTrade()">İşlem Aç</button>
+            </div>
+
+            <h3>Açık İşlemlerim</h3>
+            <div id="active-trades-list" class="trade-list">
+                </div>
+        </section>
+
+        <section id="login-section">
+            <h2>Giriş Yap</h2>
+            <div class="auth-form">
+                <input type="text" id="login-username" placeholder="Kullanıcı Adı">
+                <input type="password" id="login-password" placeholder="Şifre">
+                <button onclick="loginUser()">Giriş Yap</button>
+            </div>
+        </section>
+
+        <section id="register-section">
+            <h2>Kayıt Ol</h2>
+            <div class="auth-form"> 
+                <input type="text" id="register-username" placeholder="Kullanıcı Adı" required>
+                <input type="password" id="register-password" placeholder="Şifre (min. 6 karakter)" required>
+                <input type="email" id="register-email" placeholder="E-posta Adresi" required>
+                
+                <label for="register-country-code">Telefon Numarası:</label>
+                <div class="phone-input-group">
+                    <select id="register-country-code" class="country-code-select" required>
+                        <option value="TR" data-prefix="+90">🇹🇷 Türkiye (+90)</option>
+                        <option value="US" data-prefix="+1">🇺🇸 ABD (+1)</option>
+                        <option value="GB" data-prefix="+44">🇬🇧 İngiltere (+44)</option>
+                        <option value="DE" data-prefix="+49">🇩🇪 Almanya (+49)</option>
+                        <option value="DEFAULT" data-prefix="">🌍 Diğer</option>
+                    </select>
+                    <input type="tel" id="register-phone" placeholder="Numara (örn: 5551234567)" required>
+                </div>
+                <button onclick="registerUser()">Kayıt Ol</button>
+            </div> 
+        </section>
+
+        <section id="about-forex">
+            <h2>Forex Nedir?</h2>
+            <p>Forex (Foreign Exchange), bir para biriminin başka bir para birimiyle değiştirildiği, dünyanın en büyük ve en likit finans piyasasıdır. Hafta içi 24 saat işlem yapılabilir ve küresel para birimlerinin değerlerini belirler.</p>
+            <h3>Temel Kavramlar</h3>
+            <ul>
+                <li>**Parite:** İki farklı para biriminin birbirine karşı değerini ifade eder (örneğin, EUR/USD).</li>
+                <li>**Pip:** Forex piyasasında fiyat değişimlerinin en küçük birimidir.</li>
+                <li>**Spread:** Alış (bid) ve satış (ask) fiyatları arasındaki farktır.</li>
+                <li>**Kaldıraç:** Yatırımcıların kendi sermayelerinin üzerinde işlem yapmalarını sağlayan bir mekanizmadır.</li>
+                <li>**Marjin:** Bir pozisyonu açmak ve sürdürmek için hesapta tutulması gereken teminat miktarıdır.</li>
+            </ul>
+            <p>Forex piyasası, döviz kurlarının yükselmesinden veya düşmesinden kar elde etme fırsatı sunar. Ancak yüksek kaldıraç nedeniyle önemli riskler de taşır. Bu nedenle bilinçli ve eğitimli bir şekilde işlem yapmak önemlidir.</p>
+        </section>
+
+        <section id="why-mytra-fx">
+            <h2>Neden MyTra-FX?</h2>
+            <p>MyTra-FX, finansal piyasalarda işlem yapmak isteyenler için güvenilir, kullanıcı dostu ve kapsamlı bir platform sunar.</p>
+            <h3>Avantajlarımız:</h3>
+            <ul>
+                <li>**Kullanıcı Dostu Arayüz:** Basit ve sezgisel arayüzümüz sayesinde hem deneyimli hem de yeni başlayan yatırımcılar kolayca işlem yapabilir.</li>
+                <li>**Gerçek Zamanlı Veriler:** Twelve Data API entegrasyonu sayesinde anlık ve doğru piyasa verilerine erişim.</li>
+                <li>**Güvenli İşlemler:** Kullanıcı bilgilerinin ve işlemlerinin güvenliğini en üst düzeyde tutuyoruz.</li>
+                <li>**Esnek Kaldıraç Seçenekleri:** 100x, 200x, 500x gibi farklı kaldıraç seçenekleri ile yatırım stratejinize uygun seçim yapabilirsiniz.</li>
+            </ul>
+            <p>MyTra-FX ile finansal hedeflerinize ulaşmak için ilk adımı atın!</p>
+        </section>
+
+        <section id="faq">
+            <h2>Sıkça Sorulan Sorular</h2>
+            <div class="faq-item">
+                <h3>Forex işlemi yapmak için ne kadar sermayeye ihtiyacım var?</h3>
+                <p>Forex piyasasında işlem yapmak için gereken minimum sermaye aracı kurumlara göre değişiklik gösterir. MyTra-FX'te demo hesap ile risksiz pratik yapabilirsiniz.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Kaldıraç nedir ve nasıl çalışır?</h3>
+                <p>Kaldıraç, yatırımcıların kendi sermayelerinin çok daha üzerinde işlem yapabilmesini sağlayan bir mekanizmadır. Örneğin, 1:100 kaldıraç ile 1000 dolarlık bir teminatla 100.000 dolarlık işlem yapabilirsiniz. Ancak kaldıraç, kar potansiyelini artırırken riskleri de artırır.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Kar al (TP) ve Zarar durdur (SL) nasıl kullanılır?</h3>
+                <p>Kar al (Take Profit - TP) ve Zarar Durdur (Stop Loss - SL), açık pozisyonlarınızı otomatik olarak kapatmanızı sağlayan emirlerdir. TP, belirlediğiniz kar seviyesine ulaşıldığında pozisyonu kapatırken, SL, belirlediğiniz zarar seviyesine ulaşıldığında daha fazla kayıp yaşanmasını engellemek için pozisyonu kapatır.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Hesabıma nasıl para yatırabilirim veya çekebilirim?</h3>
+                <p>Platformumuz üzerinden "Yatırım Yap" veya "Para Çek" butonlarına tıklayarak talebinizi iletebilirsiniz. Talebiniz admin panelimize düşecek ve sizinle iletişime geçilecektir. Ayrıca, bakiyeniz 200 USD altında ise işlem açamaz ve para çekme talebi oluşturamazsınız.</p>
+            </div>
+        </section>
+
+        <section id="contact">
+            <h2>Yatırım Danışmanı ile İletişime Geçin</h2>
+            <form id="contact-form">
+                <label for="contact-name">Adınız:</label>
+                <input type="text" id="contact-name" required>
+                <label for="contact-email">E-posta:</label>
+                <input type="email" id="contact-email" required>
+                <label for="contact-message">Mesajınız:</label>
+                <textarea id="contact-message" rows="5" required></textarea>
+                <button type="submit">Gönder</button>
+            </form>
+            <p>Alternatif olarak bize info@mytra-fx.com adresinden e-posta gönderebilir veya +90 5XX XXX XX XX numaralı telefondan ulaşabilirsiniz.</p>
+        </section>
+
+        <section id="wallet">
+            <h2>Cüzdanım</h2>
+            <p>Mevcut Bakiyeniz: <span id="current-balance">0.00</span> USD</p>
+            <p>Kaldıraç Ayarınız: <span id="current-leverage">100</span>x</p>
+
+            <h3>Kaldıraç Ayarla</h3>
+            <select id="leverage-select">
+                <option value="100">100x</option>
+                <option value="200">200x</option>
+                <option value="500">500x</option>
+            </select>
+            <button onclick="updateLeverage()">Kaldıracı Güncelle</button>
+
+            <h3>Para Yatır / Çek</h3>
+            <input type="number" id="deposit-withdraw-amount" placeholder="Miktar">
+            <textarea id="deposit-withdraw-message" placeholder="Mesajınız (örn: Para yatırma talebi)" rows="3"></textarea>
+            <button onclick="sendDepositWithdrawRequest('deposit')">Yatırım Yap</button>
+            <button onclick="sendDepositWithdrawRequest('withdraw')">Para Çek</button>
+        </section>
+
+        <section id="trade-history">
+            <h2>İşlem Geçmişi</h2>
+            <div id="trade-history-list" class="trade-list">
+                </div>
+        </section>
+
+        <section id="signals">
+            <h2>Sinyaller</h2>
+            <div id="signals-list" class="signals-list">
+                </div>
+        </section>
+
+        <section id="admin-panel">
+            <h2>Admin Paneli</h2>
+            <div class="admin-controls">
+                <h3>Kullanıcılar ve İşlemleri</h3>
+                <button onclick="loadAdminUsers()">Kullanıcıları Listele</button>
+                <div id="admin-users-list"></div>
+
+                <h3>Yatırım/Çekim Mesajları</h3>
+                <button onclick="loadAdminMessages()">Mesajları Görüntüle</button>
+                <div id="admin-messages-list"></div>
+
+                <h3>Sinyal Ekle</h3>
+                <input type="text" id="signal-symbol" placeholder="Sembol (örn: EUR/USD)">
+                <select id="signal-type">
+                    <option value="BUY">AL</option>
+                    <option value="SELL">SAT</option>
+                </select>
+                <input type="number" id="signal-entry-price" placeholder="Giriş Fiyatı">
+                <input type="number" id="signal-tp" placeholder="Kar Al (TP)">
+                <input type="number" id="signal-sl" placeholder="Zarar Durdur (SL)">
+                <button onclick="addSignal()">Sinyal Ekle</button>
+            </div>
+        </section>
+
+        <div id="message-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <p id="modal-message"></p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 MyTra-FX. Tüm hakları saklıdır. Geliştirici: gemini&mytra-fx</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
