@@ -6,6 +6,6 @@ services:
   plan: free
   region: oregon
   buildCommand: pip install -r requirements.txt
-  startCommand: gunicorn backend.app:app
+  startCommand: gunicorn backend.app:app   # ✅ BU SATIR ÖNEMLİ
   autoDeployTrigger: commit
 version: "1"
