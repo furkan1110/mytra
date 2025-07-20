@@ -1,11 +1,14 @@
 services:
-- type: web
-  name: mytra-1
-  runtime: python
-  repo: https://github.com/furkan1110/mytra
-  plan: free
-  region: oregon
-  buildCommand: pip install -r requirements.txt
-  startCommand: gunicorn app:app
-  autoDeployTrigger: commit
-version: "1"
+  - type: web
+    name: mytra-root-app
+    env: python
+    workingDir: /
+    startCommand: gunicorn app:app
+    # port, plan, vs. buraya...
+
+  - type: web
+    name: mytra-backend-app
+    env: python
+    workingDir: backend
+    startCommand: gunicorn app:app
+    # farklı port ataman lazım, örn: 5001 gibi
