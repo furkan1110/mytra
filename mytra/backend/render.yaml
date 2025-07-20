@@ -1,0 +1,11 @@
+services:
+- type: web
+  name: mytra-1
+  runtime: python
+  repo: https://github.com/furkan1110/mytra
+  plan: free
+  region: oregon
+  buildCommand: pip install -r requirements.txt
+  startCommand: gunicorn backend.app:app
+  autoDeployTrigger: commit
+version: "1"
