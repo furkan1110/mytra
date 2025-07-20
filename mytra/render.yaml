@@ -1,0 +1,15 @@
+# Exported from Render on 2025-07-20T13:07:52Z
+services:
+- type: web
+  name: mytra-1
+  runtime: python
+  repo: https://github.com/furkan1110/mytra
+  plan: free
+  envVars:
+  - key: requirements.txt
+    sync: false
+  region: oregon
+  buildCommand: pip install -r requirements.txt
+  startCommand: gunicorn app:app
+  autoDeployTrigger: commit
+version: "1"
